@@ -19,7 +19,7 @@ public class ToDB {
     }
 
     public void addRecord(Tag tag){
-
+        
     }
 
     public void addRecord(List<Tag> tags){
