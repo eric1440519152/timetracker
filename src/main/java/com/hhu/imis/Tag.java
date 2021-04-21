@@ -1,5 +1,6 @@
 package com.hhu.imis;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,21 +12,24 @@ public class Tag {
     public String tagName;
     public String timestamp;
     public String value;
-
-    public Tag(String deviceId,String tagName,String timestamp,String value){
+  
+    public Tag(String deviceId,String tagName,java.util.Date timestamp,String value){
         this.deviceId = deviceId;
         this.tagName = tagName;
-        this.timestamp = timestamp;
+        System.out.println("转换前："+timestamp);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        this.timestamp = sdf.format(timestamp);
+        System.out.println("转换后："+this.timestamp);
         this.value = value;
     }
-    
+
     static public List<Tag> toTagList(JSONArray raw) throws Exception{
         List<Tag> list = new ArrayList<Tag>();
 
         for(int i=0;i<raw.size();i++){
             JSONObject unit = raw.getJSONObject(i);
-            Tag _unit = new Tag(unit.get("deviceId").toString(), unit.get("tagName").toString(), 
-            unit.get("timestamp").toString(), unit.get("value").toString());
+            Tag _unit = new Tag(unit.get("deviceId").toString(), unit.get("tagName").toString(),
+            unit.getDate("timestamp"), unit.get("value").toString());
             list.add(_unit);
         }
         

@@ -7,7 +7,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 public class Config {
-    static public Config globalSetting;
     public String dbUrl;
     public String username;
     public String password;
@@ -29,7 +28,7 @@ public class Config {
             username = setting.getString("useername");
             password = setting.getString("password");
 
-            globalSetting = this;
+            Global.globalSetting = this;
         }catch(Exception e){
             System.err.println(e);
         }
