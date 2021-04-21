@@ -21,8 +21,11 @@ public class ToDB {
 
     public void addRecord(Tag tag) throws Exception{
         try {
+            //在全局中查询上一次标识的时间，如果上一次标识和本次标识的时间相同，则跳过更新。
             int id = getIndicatorId(tag.tagName);
-            if (id != 0){
+            boolean newTag = Global.tagLastTime.get(tag.tagName) == null || Global.tagLastTime.get(tag.tagName) != tag.timestamp;
+            if (id != 0 && newTag){
+
                 String insertEvaSQL = "insert into T_SE_RealValue(F_IndicatorId,F_Time,F_Value) values(?,?,?) on DUPLICATE KEY UPDATE F_Time = ? , F_Value = ?";
                 String insertLogSQL = "insert into T_SE_HistoryValue(F_IndicatorId,F_Time,F_Value) values(?,?,?)";
                 PreparedStatement stmtEva = conn.prepareStatement(insertEvaSQL);
@@ -41,7 +44,10 @@ public class ToDB {
     
                 stmtEva.executeUpdate();
                 stmtLog.executeUpdate();
-    
+                
+                //更新表单中的时间戳
+                Global.tagLastTime.put(tag.tagName, tag.timestamp);
+
                 System.out.println("成功添加Tag");
             }
         } catch (Exception e) {

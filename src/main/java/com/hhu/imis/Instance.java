@@ -1,5 +1,6 @@
 package com.hhu.imis;
 
-public class Instance {
+//线程实例类
+public class Instance extends Thread {
     
 }

@@ -1,6 +1,6 @@
-com\hhu\imis\Config.class
-com\hhu\imis\Tag.class
 com\hhu\imis\Instance.class
 com\hhu\imis\ToDB.class
 com\hhu\imis\App.class
 com\hhu\imis\RESTful.class
+com\hhu\imis\Config.class
+com\hhu\imis\Tag.class
