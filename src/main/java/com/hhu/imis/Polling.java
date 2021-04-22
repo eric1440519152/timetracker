@@ -1,7 +1,6 @@
 package com.hhu.imis;
 
 import java.sql.ResultSet;
-import java.sql.Time;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
