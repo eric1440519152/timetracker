@@ -27,25 +27,29 @@ public class Polling extends TimerTask{
                         Global.Timers.get(deviceId).cancel();
                         //销毁实例
                         Global.Instances.remove(deviceId);
-                        Global.Timers.remove(deviceId);
-
-                        Timer timer = new Timer();
-                        Instance instance = new Instance(deviceId);
-
-                        switch(currStatus){
-                            case "0":
-                                System.out.println("创建设备关机监控线程，五秒后启动首次监控，"+Global.globalSetting.offInterval+"秒执行一次监控。");
-                                //关机状态
-                                timer.schedule(instance, 5*1000, Global.globalSetting.offInterval*1000);
-                                break;
-                            case "1":
-                                System.out.println("创建设备开机监控线程，五秒后启动首次监控，"+Global.globalSetting.onInterval+"秒执行一次监控。");
-                                //开机状态
-                                timer.schedule(instance, 5*1000, Global.globalSetting.offInterval*1000);
-                                break;
-                        }
-                        
+                        Global.Timers.remove(deviceId);                       
                     }
+
+                    Timer timer = new Timer();
+                    Instance instance = new Instance(deviceId);
+
+                    switch(currStatus){
+                        case "0":
+                            System.out.println("创建设备关机监控线程，五秒后启动首次监控，"+Global.globalSetting.offInterval+"秒执行一次监控。");
+                            //关机状态
+                            timer.schedule(instance, 5*1000, Global.globalSetting.offInterval*1000);
+                            break;
+                        case "1":
+                            System.out.println("创建设备开机监控线程，五秒后启动首次监控，"+Global.globalSetting.onInterval+"秒执行一次监控。");
+                            //开机状态
+                            timer.schedule(instance, 5*1000, Global.globalSetting.offInterval*1000);
+                            break;
+                    }
+
+                    Global.Instances.put(deviceId, instance);
+                    Global.Timers.put(deviceId, timer);
+                    deviceStatus.put(deviceId, currStatus);
+                    
                 }
 
                 //状态未改变，什么也不做，等待主线程轮询。
