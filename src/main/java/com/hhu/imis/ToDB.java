@@ -23,8 +23,7 @@ public class ToDB {
         try {
             //在全局中查询上一次标识的时间，如果上一次标识和本次标识的时间相同，则跳过更新。
             int id = getIndicatorId(tag.tagName);
-            System.out.println(Global.tagLastTime.get(tag.tagName));
-            boolean newTag = Global.tagLastTime.get(tag.tagName) == null || Global.tagLastTime.get(tag.tagName) != tag.timestamp;
+            boolean newTag = Global.tagLastTime.get(tag.tagName) == null || !Global.tagLastTime.get(tag.tagName).equals(tag.timestamp);
             System.out.println("newTag状态："+newTag);
             
             if (id != 0 && newTag){
@@ -78,15 +77,21 @@ public class ToDB {
         return set;
     }
 
-    public int getIndicatorId(String tagName) throws Exception{
-        String querySQL = "SELECT F_Id From T_SE_Indicator WHERE F_Name = ?";
-        PreparedStatement stmt = conn.prepareStatement(querySQL);
-        stmt.setString(1, tagName);
+    public int getIndicatorId(String tagName){
+        try {
+            String querySQL = "SELECT F_Id From T_SE_Indicator WHERE F_Name = ?";
+            PreparedStatement stmt = conn.prepareStatement(querySQL);
+            stmt.setString(1, tagName);
 
-        ResultSet set = stmt.executeQuery();
-        set.next();
+            ResultSet set = stmt.executeQuery();
+            set.next();
 
-        return set.getInt(1);
+            return set.getInt(1);
+        } catch (Exception e) {
+            //TODO: handle exception
+            System.out.println("查无此Tag ID:"+tagName);
+            return 0;
+        }
     }
 
     public String getEvaStatus(String tagName) throws Exception{
@@ -101,11 +106,16 @@ public class ToDB {
         return set.getString("F_Status");
     }
 
-    public void delRealRecord(int id) throws Exception{
-        String delSql = "delete from T_SE_RealValue where F_IndicatorId = ?";
-        PreparedStatement stmt = conn.prepareStatement(delSql);
-        
-        stmt.setInt(1, id);
-        stmt.executeUpdate();
+    public void delRealRecord(int id){
+        try {
+            String delSql = "delete from T_SE_RealValue where F_IndicatorId = ?";
+            PreparedStatement stmt = conn.prepareStatement(delSql);
+            
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            //TODO: handle exception
+            System.err.println("删除记录时出现错误"+e);
+        }
     }
 }
