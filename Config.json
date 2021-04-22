@@ -4,5 +4,6 @@
     "password":"projectproject123",
     "apiUrl":"https://www.hzeen.cn",
     "onInterval":5,
-    "offInterval":20
+    "offInterval":20,
+    "pollingInterval":5
 }

@@ -11,6 +11,7 @@ public class Config {
     public String username;
     public String password;
     public String apiUrl;
+    public int pollingInterval;
     public int offInterval;
     public int onInterval;
     
@@ -33,6 +34,7 @@ public class Config {
             apiUrl = setting.getString("apiUrl");
             offInterval = setting.getIntValue("offInterval");
             onInterval = setting.getIntValue("onInterval");
+            pollingInterval = setting.getIntValue("pollingInterval");
 
             Global.globalSetting = this;
         }catch(Exception e){

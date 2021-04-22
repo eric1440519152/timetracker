@@ -19,8 +19,9 @@ public class App
         Global.dbConn = dbConn;
 
         //创建轮询Timer进程
-        Timer t =new Timer();
-        //在3秒后执行MyTask类中的run方法
-        t.schedule(new Instance(), 3000,10000);
+        Timer timer = new Timer();
+        //启动轮询线程
+        System.out.println("5秒后启动轮询线程，每"+Global.globalSetting.pollingInterval+"轮询一次");
+        timer.schedule(new Polling(), 5000, Global.globalSetting.pollingInterval*1000);
     }
 }
