@@ -4,3 +4,4 @@ com\hhu\imis\App.class
 com\hhu\imis\RESTful.class
 com\hhu\imis\Config.class
 com\hhu\imis\Tag.class
+com\hhu\imis\Global.class

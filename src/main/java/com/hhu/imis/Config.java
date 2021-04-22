@@ -10,6 +10,7 @@ public class Config {
     public String dbUrl;
     public String username;
     public String password;
+    public String ApiUrl;
     
     public Config(){
         String path = "."+ File.separator + "Config.json";
@@ -25,8 +26,9 @@ public class Config {
             JSONObject setting = JSON.parseObject(s);
 
             dbUrl = setting.getString("dbUrl");
-            username = setting.getString("useername");
+            username = setting.getString("username");
             password = setting.getString("password");
+            ApiUrl = setting.getString("ApiUrl");
 
             Global.globalSetting = this;
         }catch(Exception e){
