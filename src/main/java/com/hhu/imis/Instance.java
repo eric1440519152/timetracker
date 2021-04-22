@@ -10,6 +10,10 @@ import com.alibaba.fastjson.JSONObject;
 //该线程用来操作获取数据及写入到数据库的实例
 
 public class Instance extends TimerTask {
+    private String deviceId;
+    public Instance(String deviceId){
+        this.deviceId = deviceId;
+    }
     public void run(){
         try{
             //JSONObject obj = RESTful.Restful("https://localhost:44390/api/json", "city=1&key=8c17a52abbb71895e1efa8c1b3893573");

@@ -10,7 +10,9 @@ public class Config {
     public String dbUrl;
     public String username;
     public String password;
-    public String ApiUrl;
+    public String apiUrl;
+    public int offInterval;
+    public int onInterval;
     
     public Config(){
         String path = "."+ File.separator + "Config.json";
@@ -28,7 +30,9 @@ public class Config {
             dbUrl = setting.getString("dbUrl");
             username = setting.getString("username");
             password = setting.getString("password");
-            ApiUrl = setting.getString("ApiUrl");
+            apiUrl = setting.getString("apiUrl");
+            offInterval = setting.getIntValue("offInterval");
+            onInterval = setting.getIntValue("onInterval");
 
             Global.globalSetting = this;
         }catch(Exception e){

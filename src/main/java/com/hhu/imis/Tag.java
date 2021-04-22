@@ -14,12 +14,11 @@ public class Tag {
     public String value;
   
     public Tag(String deviceId,String tagName,java.util.Date timestamp,String value){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        
         this.deviceId = deviceId;
         this.tagName = tagName;
-        System.out.println("转换前："+timestamp);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.timestamp = sdf.format(timestamp);
-        System.out.println("转换后："+this.timestamp);
         this.value = value;
     }
 
