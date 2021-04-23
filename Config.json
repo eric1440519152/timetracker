@@ -1,9 +1,0 @@
-{
-    "dbUrl":"mysql://www.hzeen.cn:3306/project",
-    "username":"project",
-    "password":"projectproject123",
-    "apiUrl":"https://www.hzeen.cn",
-    "onInterval":5,
-    "offInterval":20,
-    "pollingInterval":20
-}
