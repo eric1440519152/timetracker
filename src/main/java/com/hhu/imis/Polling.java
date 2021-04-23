@@ -22,8 +22,8 @@ public class Polling extends TimerTask{
                 if(changed){
                     //状态改变，重建实例进程
                     System.out.println(deviceId + " 设备状态改变，开始重建进程");
-                    System.out.println("if"+currStatus.equals("1"));
-                    System.out.println(Global.Timers.get(deviceId));
+                    //System.out.println("if"+currStatus.equals("1"));
+                    //System.out.println(Global.Timers.get(deviceId));
                     if(Global.Timers.get(deviceId) != null){
                         System.out.println(deviceId + "原线程销毁");
                         //原来的设备线程存在，先销毁
