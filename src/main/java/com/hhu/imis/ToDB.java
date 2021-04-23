@@ -24,7 +24,7 @@ public class ToDB {
             //在全局中查询上一次标识的时间，如果上一次标识和本次标识的时间相同，则跳过更新。
             int id = getIndicatorId(tag.tagName);
             boolean newTag = Global.tagLastTime.get(tag.tagName) == null || !Global.tagLastTime.get(tag.tagName).equals(tag.timestamp);
-            System.out.println("newTag状态："+newTag);
+            //System.out.println("newTag状态："+newTag);
             
             if (id != 0 && newTag){
 

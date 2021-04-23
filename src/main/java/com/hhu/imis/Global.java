@@ -9,6 +9,6 @@ public class Global {
     static public ToDB dbConn;
     static public Config globalSetting;
     static public Timer Polling;
-    static public Map<String,Instance> Instances;
-    static public Map<String,Timer> Timers;
+    static public Map<String,Instance> Instances =new HashMap<>();
+    static public Map<String,Timer> Timers = new HashMap<>();
 }

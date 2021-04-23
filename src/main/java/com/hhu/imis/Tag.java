@@ -15,19 +15,19 @@ public class Tag {
   
     public Tag(String deviceId,String tagName,java.util.Date timestamp,String value){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        
+
         this.deviceId = deviceId;
         this.tagName = tagName;
         this.timestamp = sdf.format(timestamp);
         this.value = value;
     }
 
-    static public List<Tag> toTagList(JSONArray raw) throws Exception{
+    static public List<Tag> toTagList(String deviceId,JSONArray raw) throws Exception{
         List<Tag> list = new ArrayList<Tag>();
 
         for(int i=0;i<raw.size();i++){
             JSONObject unit = raw.getJSONObject(i);
-            Tag _unit = new Tag(unit.get("deviceId").toString(), unit.get("tagName").toString(),
+            Tag _unit = new Tag(deviceId,unit.get("tagName").toString(),
             unit.getDate("timestamp"), unit.get("value").toString());
             list.add(_unit);
         }
