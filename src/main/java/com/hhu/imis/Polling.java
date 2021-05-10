@@ -10,12 +10,14 @@ public class Polling extends TimerTask{
     private Map<String,String> deviceStatus = new HashMap<>();
     public void run() {
         try {
-            ResultSet set = Global.dbConn.getEvaStatus();
+            ResultSet set = Global.dbConn.getEquipment();
 
             //依次遍历数据库结果，并匹配和存入deviceStatus
             while(set.next()){
-                String deviceId = set.getString("F_EquipmentId");
-                String currStatus = set.getString("F_Status");
+                String deviceId = set.getString("F_Id");
+                String deviceNo = set.getString("F_No");
+                String deviceCatagry = set.getString("F_CatagryId");
+                String currStatus = Global.dbConn.getEvaStatus(deviceId);
 
                 Boolean changed = deviceStatus.get(deviceId) == null || !deviceStatus.get(deviceId).equals(currStatus);
                 System.out.println(deviceId+" 历史状态：" + deviceStatus.get(deviceId) + "当前状态：" + currStatus);
@@ -36,7 +38,7 @@ public class Polling extends TimerTask{
                     }
 
                     Timer timer = new Timer();
-                    Instance instance = new Instance(deviceId);
+                    Instance instance = new Instance(deviceId,deviceNo,deviceCatagry);
                     
 
                     if(currStatus.equals("0")){

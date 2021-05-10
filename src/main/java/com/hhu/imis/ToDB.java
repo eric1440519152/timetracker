@@ -22,14 +22,14 @@ public class ToDB {
     public void addRecord(Tag tag) throws Exception{
         try {
             //在全局中查询上一次标识的时间，如果上一次标识和本次标识的时间相同，则跳过更新。
-            int id = getIndicatorId(tag.tagName);
+            int id = getIndicatorId(tag.tagName,tag.catagoryId);
             boolean newTag = Global.tagLastTime.get(tag.tagName) == null || !Global.tagLastTime.get(tag.tagName).equals(tag.timestamp);
             //System.out.println("newTag状态："+newTag);
             
             if (id != 0 && newTag){
 
-                String insertEvaSQL = "insert into T_SE_RealValue(F_IndicatorId,F_Time,F_Value) values(?,?,?)";
-                String insertLogSQL = "insert into T_SE_HistoryValue(F_IndicatorId,F_Time,F_Value) values(?,?,?)";
+                String insertEvaSQL = "insert into T_SE_RealValue(F_IndicatorId,F_EquipmentId,F_Time,F_Value) values(?,?,?,?)";
+                String insertLogSQL = "insert into T_SE_HistoryValue(F_IndicatorId,F_EquipmentId,F_Time,F_Value) values(?,?,?,?)";
                 PreparedStatement stmtEva = conn.prepareStatement(insertEvaSQL);
                 PreparedStatement stmtLog = conn.prepareStatement(insertLogSQL);
                 System.out.println("取到标识ID："+id);
@@ -39,12 +39,14 @@ public class ToDB {
 
                 //开始执行数据库操作
                 stmtEva.setInt(1, id);
-                stmtEva.setString(2, tag.timestamp);
-                stmtEva.setString(3, tag.value);
+                stmtEva.setString(3, tag.timestamp);
+                stmtEva.setString(4, tag.value);
+                stmtEva.setString(2, tag.deviceId);
                 
                 stmtLog.setInt(1, id);
-                stmtLog.setString(2, tag.timestamp);
-                stmtLog.setString(3, tag.value);
+                stmtLog.setString(3, tag.timestamp);
+                stmtLog.setString(4, tag.value);
+                stmtLog.setString(2, tag.deviceId);
     
                 stmtEva.executeUpdate();
                 stmtLog.executeUpdate();
@@ -52,8 +54,8 @@ public class ToDB {
                 //更新表单中的时间戳
                 Global.tagLastTime.put(tag.tagName, tag.timestamp);
                 //向Map中添加记录
-                System.out.println(Global.tagLastTime.values());
-                System.out.println("成功添加Tag");
+                //System.out.println(Global.tagLastTime.values());
+                System.out.println(tag.deviceNo +"成功添加Tag:" + tag.tagName);
             }
         } catch (Exception e) {
             System.err.println("添加记录时出现错误："+e);
@@ -77,11 +79,22 @@ public class ToDB {
         return set;
     }
 
-    public int getIndicatorId(String tagName){
+    public ResultSet getEquipment() throws Exception{
+        String getEquipmentSQL = "select F_Id,F_CatagryId,F_No from T_SE_Equipment";
+        PreparedStatement stmt = conn.prepareStatement(getEquipmentSQL);
+        ResultSet set = null;
+        
+        set = stmt.executeQuery();
+
+        return set;
+    }
+
+    public int getIndicatorId(String tagName,String catagoryId){
         try {
-            String querySQL = "SELECT F_Id From T_SE_Indicator WHERE F_Name = ?";
+            String querySQL = "SELECT F_Id From T_SE_Indicator WHERE F_Name = ? AND F_CatagoryId = ?";
             PreparedStatement stmt = conn.prepareStatement(querySQL);
             stmt.setString(1, tagName);
+            stmt.setString(2, catagoryId);
 
             ResultSet set = stmt.executeQuery();
             set.next();
