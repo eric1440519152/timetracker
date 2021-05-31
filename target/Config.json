@@ -3,7 +3,7 @@
     "username":"project",
     "password":"projectproject123",
     "apiUrl":"https://api.hzeen.cn/api/json",
-    "onInterval":5,
-    "offInterval":20,
+    "onInterval":30,
+    "offInterval":60,
     "pollingInterval":5
 }

@@ -38,7 +38,12 @@ public class Polling extends TimerTask{
                     }
 
                     Timer timer = new Timer();
-                    Instance instance = new Instance(deviceId,deviceNo,deviceCatagry);
+                    
+                    Map<String,String> tagLastTime = new HashMap<>();
+                    Global.tagLastTimes.put(deviceId, tagLastTime);
+
+                    ToDB dbConn = new ToDB(Global.globalSetting.dbUrl, Global.globalSetting.username, Global.globalSetting.password);
+                    Instance instance = new Instance(deviceId,deviceNo,deviceCatagry,dbConn);
                     
 
                     if(currStatus.equals("0")){

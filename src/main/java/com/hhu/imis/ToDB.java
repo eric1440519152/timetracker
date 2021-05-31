@@ -1,6 +1,7 @@
 package com.hhu.imis;
 import java.sql.*;
 import java.util.List;
+import java.util.Map;
 
 public class ToDB {
     private String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
@@ -23,7 +24,8 @@ public class ToDB {
         try {
             //在全局中查询上一次标识的时间，如果上一次标识和本次标识的时间相同，则跳过更新。
             int id = getIndicatorId(tag.tagName,tag.catagoryId);
-            boolean newTag = Global.tagLastTime.get(tag.tagName) == null || !Global.tagLastTime.get(tag.tagName).equals(tag.timestamp);
+            Map<String,String> tagLastTime = Global.tagLastTimes.get(tag.deviceId);
+            boolean newTag = tagLastTime.get(tag.tagName) == null || !tagLastTime.get(tag.tagName).equals(tag.timestamp);
             //System.out.println("newTag状态："+newTag);
             
             if (id != 0 && newTag){
@@ -32,7 +34,7 @@ public class ToDB {
                 String insertLogSQL = "insert into T_SE_HistoryValue(F_IndicatorId,F_EquipmentId,F_Time,F_Value) values(?,?,?,?)";
                 PreparedStatement stmtEva = conn.prepareStatement(insertEvaSQL);
                 PreparedStatement stmtLog = conn.prepareStatement(insertLogSQL);
-                System.out.println("取到标识ID："+id);
+                //System.out.println("取到标识ID："+id);
 
                 //删除原记录
                 delRealRecord(id);
@@ -50,12 +52,13 @@ public class ToDB {
     
                 stmtEva.executeUpdate();
                 stmtLog.executeUpdate();
-                
+
                 //更新表单中的时间戳
-                Global.tagLastTime.put(tag.tagName, tag.timestamp);
+                tagLastTime.put(tag.tagName, tag.timestamp);
                 //向Map中添加记录
                 //System.out.println(Global.tagLastTime.values());
-                System.out.println(tag.deviceNo +"成功添加Tag:" + tag.tagName);
+
+                //System.out.println(tag.deviceNo +"成功添加Tag:" + tag.tagName);
             }
         } catch (Exception e) {
             System.err.println("添加记录时出现错误："+e);
@@ -64,9 +67,46 @@ public class ToDB {
     }
 
     public void addRecord(List<Tag> tags) throws Exception{
-        for(int i = 0;i<tags.size();i++){
-            addRecord(tags.get(i));
+        String insertEvaSQL = "insert into T_SE_RealValue(F_IndicatorId,F_EquipmentId,F_Time,F_Value) values(?,?,?,?)";
+        String insertLogSQL = "insert into T_SE_HistoryValue(F_IndicatorId,F_EquipmentId,F_Time,F_Value) values(?,?,?,?)";
+        String delSql = "delete from T_SE_RealValue where F_IndicatorId = ?";
+        PreparedStatement stmtDel = conn.prepareStatement(delSql);
+        PreparedStatement stmtEva = conn.prepareStatement(insertEvaSQL);
+        PreparedStatement stmtLog = conn.prepareStatement(insertLogSQL);
+        Map<String,String> tagLastTime = Global.tagLastTimes.get(tags.get(0).deviceId);
+
+        for(Tag tag : tags){
+            int id = getIndicatorId(tag.tagName,tag.catagoryId);
+            boolean newTag = tagLastTime.get(tag.tagName) == null || !tagLastTime.get(tag.tagName).equals(tag.timestamp);
+            if (id != 0 && newTag){
+                //System.out.println(tag.deviceNo+"添加新Tag任务");
+                stmtDel.setInt(1, id);
+                stmtDel.addBatch();
+
+                //开始执行数据库操作
+                stmtEva.setInt(1, id);
+                stmtEva.setString(3, tag.timestamp);
+                stmtEva.setString(4, tag.value);
+                stmtEva.setString(2, tag.deviceId);
+
+                stmtEva.addBatch();
+
+                stmtLog.setInt(1, id);
+                stmtLog.setString(3, tag.timestamp);
+                stmtLog.setString(4, tag.value);
+                stmtLog.setString(2, tag.deviceId);
+
+                stmtLog.addBatch();
+
+                //更新表单中的时间戳
+                tagLastTime.put(tag.tagName, tag.timestamp);
+            }
+                       
         }
+        
+        stmtDel.executeBatch();
+        stmtEva.executeBatch();
+        stmtLog.executeBatch();
     }
 
     public ResultSet getEvaStatus() throws Exception{
